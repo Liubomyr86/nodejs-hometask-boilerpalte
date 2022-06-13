@@ -1,43 +1,44 @@
 const { FighterRepository } = require("../repositories/fighterRepository");
 
 class FighterService {
-  // TODO: Implement methods to work with fighters
-
-  checkDbRespounse(req) {
-    if (!req) {
-      return null;
+  checkDbResponse(res, errorMessage) {
+    if (!res) {
+      throw Error(errorMessage);
     }
-    return req;
+    return res;
   }
 
   getFighters() {
     const fighters = FighterRepository.getAll();
-    return this.checkDbRespounse(fighters);
+    return this.checkDbResponse(fighters, "Fighters not found");
   }
 
   getFighter(id) {
     const fighter = this.search({ id });
-    return this.checkDbRespounse(fighter);
+    return this.checkDbResponse(fighter, "Fighter not found");
   }
 
   createFighter(data) {
     const fighter = FighterRepository.create(data);
-    return this.checkDbRespounse(fighter);
+    return this.checkDbResponse(fighter, "Can not create fighter");
   }
 
   updateFighter(id, dataToUpdate) {
     const fighter = FighterRepository.update(id, dataToUpdate);
-    return this.checkDbRespounse(fighter);
+    return this.checkDbResponse(fighter, "Can not update fighter");
   }
 
   deleteFighter(id) {
     const fighter = FighterRepository.delete(id);
-    return this.checkDbRespounse(fighter);
+    return this.checkDbResponse(fighter, "Fighter not found");
   }
 
   search(search) {
     const item = FighterRepository.getOne(search);
-    return this.checkDbRespounse(item);
+    if (!item) {
+      return null;
+    }
+    return item;
   }
 }
 

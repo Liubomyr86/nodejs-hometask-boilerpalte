@@ -1,38 +1,36 @@
 const { UserRepository } = require("../repositories/userRepository");
 
 class UserService {
-  // TODO: Implement methods to work with user
-
-  checkDbRespounse(res) {
+  checkDbResponse(res, errorMessage) {
     if (!res) {
-      return null;
+      throw Error(errorMessage);
     }
     return res;
   }
 
   getUsers() {
     const users = UserRepository.getAll();
-    return this.checkDbRespounse(users);
+    return this.checkDbResponse(users, "Users not found");
   }
 
   getUser(id) {
     const user = this.search({ id });
-    return this.checkDbRespounse(user);
+    return this.checkDbResponse(user, "User not found");
   }
 
   createUser(data) {
     const user = UserRepository.create(data);
-    return this.checkDbRespounse(user);
+    return this.checkDbResponse(user, "Can not create user");
   }
 
   updateUser(id, dataToUpdate) {
     const user = UserRepository.update(id, dataToUpdate);
-    return this.checkDbRespounse(user);
+    return this.checkDbResponse(user, "Can not update user");
   }
 
   deleteUser(id) {
     const user = UserRepository.delete(id);
-    return this.checkDbRespounse(user);
+    return this.checkDbResponse(user, "User not found");
   }
 
   search(search) {

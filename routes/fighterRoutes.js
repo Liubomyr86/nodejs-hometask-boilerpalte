@@ -6,87 +6,92 @@ const {
   updateFighterValid,
 } = require("../middlewares/fighter.validation.middleware");
 const { FighterRepository } = require("../repositories/fighterRepository");
+const { RESPONSE_STATUS_CODES } = require("../constants/responseStatus");
 
 const router = Router();
 
-// TODO: Implement route controllers for fighter
+router.get(
+  "/",
+  function (req, res, next) {
+    try {
+      const data = FighterService.getFighters();
 
-router.get("/", function (req, res, next) {
-  const result = FighterService.getFighters();
+      res.data = data;
+    } catch (err) {
+      res.err = err;
+      res.errCode = RESPONSE_STATUS_CODES.notFound;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
-  if (result) {
-    res.send(result);
-  } else {
-    const error = {
-      error: true,
-      message: "Users not found",
-    };
+router.get(
+  "/:id",
+  function (req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = FighterService.getFighter(id);
+      res.data = data;
+    } catch (err) {
+      res.err = err;
+      res.errCode = RESPONSE_STATUS_CODES.notFound;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
-    res.status(404).json(error);
-  }
-});
+router.post(
+  "/",
+  function (req, res, next) {
+    try {
+      const data = FighterService.createFighter(req.body);
+      res.data = data;
+    } catch (err) {
+      res.err = err;
+      res.errCode = RESPONSE_STATUS_CODES.badRequest;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
-router.get("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const result = FighterService.getFighter(id);
+router.put(
+  "/:id",
+  function (req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = FighterService.updateFighter(id, req.body);
+      res.data = data;
+    } catch (err) {
+      res.err = err;
+      res.errCode = RESPONSE_STATUS_CODES.badRequest;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
-  if (result) {
-    res.send(result);
-  } else {
-    const error = {
-      error: true,
-      message: "User not found2",
-    };
-
-    res.status(404).json(error);
-  }
-});
-
-router.post("/", function (req, res, next) {
-  const result = FighterService.createFighter(req.body);
-
-  if (result) {
-    res.send(result);
-  } else {
-    const error = {
-      error: true,
-      message: "User not create",
-    };
-
-    res.status(404).json(error);
-  }
-});
-
-router.put("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const result = FighterService.updateFighter(id, req.body);
-
-  if (result) {
-    res.send(result);
-  } else {
-    const error = {
-      error: true,
-      message: "User not create",
-    };
-
-    res.status(404).json(error);
-  }
-});
-
-router.delete("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const result = FighterService.deleteFighter(id);
-
-  if (result) {
-    res.send(result);
-  } else {
-    const error = {
-      error: true,
-      message: "User not create",
-    };
-
-    res.status(404).json(error);
-  }
-});
+router.delete(
+  "/:id",
+  function (req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = FighterService.deleteFighter(id);
+      res.data = data;
+    } catch (err) {
+      res.err = err;
+      res.errCode = RESPONSE_STATUS_CODES.notFound;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
 module.exports = router;

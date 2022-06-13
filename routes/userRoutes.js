@@ -2,87 +2,91 @@ const { Router } = require("express");
 const UserService = require("../services/userService");
 const { createUserValid, updateUserValid } = require("../middlewares/user.validation.middleware");
 const { responseMiddleware } = require("../middlewares/response.middleware");
+const { RESPONSE_STATUS_CODES } = require("../constants/responseStatus");
 
 const router = Router();
 
-// TODO: Implement route controllers for user
+router.get(
+  "/",
+  function (req, res, next) {
+    try {
+      const data = UserService.getUsers();
+      res.data = data;
+    } catch (err) {
+      res.err = err;
+      res.errCode = RESPONSE_STATUS_CODES.notFound;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
-router.get("/", function (req, res, next) {
-  const result = UserService.getUsers();
+router.get(
+  "/:id",
+  function (req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = UserService.getUser(id);
+      res.data = data;
+    } catch (err) {
+      res.err = err;
+      res.errCode = RESPONSE_STATUS_CODES.notFound;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
-  if (result) {
-    res.send(result);
-  } else {
-    const error = {
-      error: true,
-      message: "Users not found",
-    };
+router.post(
+  "/",
+  function (req, res, next) {
+    try {
+      const data = UserService.createUser(req.body);
+      res.data = data;
+    } catch (err) {
+      res.err = err;
+      res.errCode = RESPONSE_STATUS_CODES.badRequest;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
-    res.status(404).json(error);
-  }
-});
+router.put(
+  "/:id",
+  function (req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = UserService.updateUser(id, req.body);
+      res.data = data;
+    } catch (err) {
+      res.err = err;
+      res.errCode = RESPONSE_STATUS_CODES.badRequest;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
-router.get("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const result = UserService.getUser(id);
-
-  if (result) {
-    res.send(result);
-  } else {
-    const error = {
-      error: true,
-      message: "User not found2",
-    };
-
-    res.status(404).json(error);
-  }
-});
-
-router.post("/", function (req, res, next) {
-  const result = UserService.createUser(req.body);
-
-  if (result) {
-    res.send(result);
-  } else {
-    const error = {
-      error: true,
-      message: "User not create",
-    };
-
-    res.status(404).json(error);
-  }
-});
-
-router.put("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const result = UserService.updateUser(id, req.body);
-
-  if (result) {
-    res.send(result);
-  } else {
-    const error = {
-      error: true,
-      message: "User not create",
-    };
-
-    res.status(404).json(error);
-  }
-});
-
-router.delete("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const result = UserService.deleteUser(id);
-
-  if (result) {
-    res.send(result);
-  } else {
-    const error = {
-      error: true,
-      message: "User not create",
-    };
-
-    res.status(404).json(error);
-  }
-});
+router.delete(
+  "/:id",
+  function (req, res, next) {
+    try {
+      const { id } = req.params;
+      const data = UserService.deleteUser(id);
+      res.data = data;
+    } catch (err) {
+      res.err = err;
+      res.errCode = RESPONSE_STATUS_CODES.notFound;
+    } finally {
+      next();
+    }
+  },
+  responseMiddleware,
+);
 
 module.exports = router;
