@@ -53,4 +53,36 @@ router.post("/", function (req, res, next) {
   }
 });
 
+router.put("/:id", function (req, res, next) {
+  const { id } = req.params;
+  const result = UserService.updateUser(id, req.body);
+
+  if (result) {
+    res.send(result);
+  } else {
+    const error = {
+      error: true,
+      message: "User not create",
+    };
+
+    res.status(404).json(error);
+  }
+});
+
+router.delete("/:id", function (req, res, next) {
+  const { id } = req.params;
+  const result = UserService.deleteUser(id);
+
+  if (result) {
+    res.send(result);
+  } else {
+    const error = {
+      error: true,
+      message: "User not create",
+    };
+
+    res.status(404).json(error);
+  }
+});
+
 module.exports = router;

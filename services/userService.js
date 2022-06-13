@@ -3,11 +3,11 @@ const { UserRepository } = require("../repositories/userRepository");
 class UserService {
   // TODO: Implement methods to work with user
 
-  checkDbRespounse(req) {
-    if (!req) {
+  checkDbRespounse(res) {
+    if (!res) {
       return null;
     }
-    return req;
+    return res;
   }
 
   getUsers() {
@@ -22,6 +22,16 @@ class UserService {
 
   createUser(data) {
     const user = UserRepository.create(data);
+    return this.checkDbRespounse(user);
+  }
+
+  updateUser(id, dataToUpdate) {
+    const user = UserRepository.update(id, dataToUpdate);
+    return this.checkDbRespounse(user);
+  }
+
+  deleteUser(id) {
+    const user = UserRepository.delete(id);
     return this.checkDbRespounse(user);
   }
 
