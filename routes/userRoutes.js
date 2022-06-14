@@ -41,10 +41,13 @@ router.get(
 
 router.post(
   "/",
+  createUserValid,
   function (req, res, next) {
     try {
-      const data = UserService.createUser(req.body);
-      res.data = data;
+      if (!res.errCode) {
+        const data = UserService.createUser(req.body);
+        res.data = data;
+      }
     } catch (err) {
       res.err = err;
       res.errCode = RESPONSE_STATUS_CODES.badRequest;
@@ -57,6 +60,7 @@ router.post(
 
 router.put(
   "/:id",
+  updateUserValid,
   function (req, res, next) {
     try {
       const { id } = req.params;

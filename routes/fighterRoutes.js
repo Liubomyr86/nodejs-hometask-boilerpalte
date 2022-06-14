@@ -46,10 +46,13 @@ router.get(
 
 router.post(
   "/",
+  createFighterValid,
   function (req, res, next) {
     try {
-      const data = FighterService.createFighter(req.body);
-      res.data = data;
+      if (!res.errCode) {
+        const data = FighterService.createFighter(req.body);
+        res.data = data;
+      }
     } catch (err) {
       res.err = err;
       res.errCode = RESPONSE_STATUS_CODES.badRequest;
@@ -62,6 +65,7 @@ router.post(
 
 router.put(
   "/:id",
+  updateFighterValid,
   function (req, res, next) {
     try {
       const { id } = req.params;
