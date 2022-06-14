@@ -15,14 +15,12 @@ router.get(
   function (req, res, next) {
     try {
       const data = FighterService.getFighters();
-
       res.data = data;
     } catch (err) {
       res.err = err;
       res.errCode = RESPONSE_STATUS_CODES.notFound;
-    } finally {
-      next();
     }
+    next();
   },
   responseMiddleware,
 );
@@ -37,9 +35,8 @@ router.get(
     } catch (err) {
       res.err = err;
       res.errCode = RESPONSE_STATUS_CODES.notFound;
-    } finally {
-      next();
     }
+    next();
   },
   responseMiddleware,
 );
@@ -56,9 +53,8 @@ router.post(
     } catch (err) {
       res.err = err;
       res.errCode = RESPONSE_STATUS_CODES.badRequest;
-    } finally {
-      next();
     }
+    next();
   },
   responseMiddleware,
 );
@@ -74,9 +70,8 @@ router.put(
     } catch (err) {
       res.err = err;
       res.errCode = RESPONSE_STATUS_CODES.badRequest;
-    } finally {
-      next();
     }
+    next();
   },
   responseMiddleware,
 );
@@ -91,9 +86,8 @@ router.delete(
     } catch (err) {
       res.err = err;
       res.errCode = RESPONSE_STATUS_CODES.notFound;
-    } finally {
-      next();
     }
+    next();
   },
   responseMiddleware,
 );

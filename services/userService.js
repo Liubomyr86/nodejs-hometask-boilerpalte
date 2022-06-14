@@ -1,3 +1,4 @@
+const isEmpty = require("lodash.isempty");
 const { UserRepository } = require("../repositories/userRepository");
 
 class UserService {
@@ -10,6 +11,9 @@ class UserService {
 
   getUsers() {
     const users = UserRepository.getAll();
+    if (isEmpty(users)) {
+      throw Error("Users not found");
+    }
     return this.checkDbResponse(users, "Users not found");
   }
 
@@ -19,11 +23,20 @@ class UserService {
   }
 
   createUser(data) {
+    const { email, phoneNumber } = data;
+    if (this.search({ email }) || this.search({ phoneNumber })) {
+      throw Error("This email or phone number is already registered");
+    }
     const user = UserRepository.create(data);
     return this.checkDbResponse(user, "Can not create user");
   }
 
   updateUser(id, dataToUpdate) {
+    const { email, phoneNumber } = dataToUpdate;
+    if (!this.search({ id })) throw Error("User not found");
+    if (this.search({ email }) || this.search({ phoneNumber })) {
+      throw Error("This email or phone number is already registered");
+    }
     const user = UserRepository.update(id, dataToUpdate);
     return this.checkDbResponse(user, "Can not update user");
   }

@@ -38,7 +38,7 @@ const validate = (object, schema) =>
     .map((key) => errorMessage(key));
 
 const createFighterValid = (req, res, next) => {
-  const { id, ...restValues } = fighter;
+  const { id, health, ...restValues } = fighter;
   const data = Object.assign({}, restValues, req.body);
   const errors = validate(data, schema);
 
